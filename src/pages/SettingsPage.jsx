@@ -316,7 +316,9 @@ function NotificationsTab({ showToast }) {
   const fetchPreferences = async () => {
     try {
       const res = await api.get('/user/preferences')
-      setPrefs(res.data.data)
+      if (res.data?.data) {
+        setPrefs(prev => ({ ...prev, ...res.data.data }))
+      }
     } catch (err) {
       // Use defaults on error
     } finally {
