@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">StatusMy</string>
+    <string name="title_activity_main">StatusMy</string>
+    <string name="package_name">com.statusmy.app</string>
+    <string name="custom_url_scheme">com.statusmy.app</string>
+</resources>
