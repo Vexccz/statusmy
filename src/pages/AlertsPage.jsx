@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import api from '../utils/api'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 // ── Constants ──────────────────────────────────────────────
 
@@ -429,6 +430,10 @@ export default function AlertsPage() {
   const [testing, setTesting] = useState(null)
   const [testResult, setTestResult] = useState(null)
 
+  const { PullIndicator } = usePullToRefresh(async () => {
+    await fetchData()
+  })
+
   const fetchData = useCallback(async () => {
     try {
       setError(null)
@@ -516,6 +521,7 @@ export default function AlertsPage() {
       transition={{ duration: 0.3 }}
       className="min-h-screen pt-6 pb-6 px-4"
     >
+      <PullIndicator />
       <div className="max-w-container mx-auto">
         {/* ── Header ──────────────────────────────────── */}
         <motion.div

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import api from '../utils/api'
 import { useSocket } from '../context/SocketContext'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 // ── Constants ──────────────────────────────────────────────
 
@@ -376,21 +377,24 @@ export default function StatusPage() {
   const [error, setError] = useState(null)
   const { socket, connected } = useSocket()
 
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const res = await api.get('/status')
-        setData(res.data.data)
-      } catch (err) {
-        setError('Failed to load status data')
-      } finally {
-        setLoading(false)
-      }
+  const fetchStatus = useCallback(async () => {
+    try {
+      const res = await api.get('/status')
+      setData(res.data.data)
+    } catch (err) {
+      setError('Failed to load status data')
+    } finally {
+      setLoading(false)
     }
+  }, [])
+
+  const { PullIndicator } = usePullToRefresh(fetchStatus)
+
+  useEffect(() => {
     fetchStatus()
     const interval = setInterval(fetchStatus, connected ? 120000 : 60000)
     return () => clearInterval(interval)
-  }, [connected])
+  }, [fetchStatus, connected])
 
   useEffect(() => {
     if (!socket) return
@@ -479,6 +483,7 @@ export default function StatusPage() {
 
   return (
     <div className="bg-bg pb-6">
+      <PullIndicator />
       {/* Main Content */}
       <main className="max-w-[720px] mx-auto px-4 pt-5">
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="flex flex-col gap-6">

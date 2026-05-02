@@ -13,6 +13,7 @@ import {
   X,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { hapticLight } from '../utils/haptics'
 
 const tabs = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
@@ -37,6 +38,7 @@ export default function MobileLayout() {
   }
 
   const handleTabClick = (href) => {
+    hapticLight()
     navigate(href)
   }
 

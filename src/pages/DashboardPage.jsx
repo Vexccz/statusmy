@@ -21,6 +21,8 @@ import { useSocket } from '../context/SocketContext'
 import ResponseTimeChartGlobal from '../components/ResponseTimeChart'
 import WorldMap from '../components/WorldMap'
 import { showToast } from '../components/Toast'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
+import { updateIncidentBadge } from '../utils/badge'
 
 // ── Helpers ────────────────────────────────────────────────
 
@@ -365,6 +367,11 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // Pull-to-refresh
+  const { PullIndicator, refreshing: pullRefreshing } = usePullToRefresh(async () => {
+    await fetchData()
+  })
+
   const fetchData = useCallback(async () => {
     try {
       setError(null)
@@ -398,7 +405,11 @@ export default function DashboardPage() {
       )
 
       setMonitors(monitorsWithChecks)
-      setIncidents(incidentsRes.data.data || incidentsRes.data || [])
+      const incidentsList = incidentsRes.data.data || incidentsRes.data || []
+      setIncidents(incidentsList)
+      // Update app badge with active incident count
+      const activeCount = incidentsList.filter(i => i.status !== 'resolved').length
+      updateIncidentBadge(activeCount)
       setLoading(false)
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load dashboard data')
@@ -534,6 +545,7 @@ export default function DashboardPage() {
       transition={{ duration: 0.3 }}
       className="p-6 lg:p-8"
     >
+      <PullIndicator />
       <div className="max-w-[1400px] mx-auto">
         {/* ── Header ──────────────────────────────────── */}
         <motion.div

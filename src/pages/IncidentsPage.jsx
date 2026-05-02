@@ -13,6 +13,7 @@ import {
   Activity,
 } from 'lucide-react'
 import api from '../utils/api'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 // ── Constants ──────────────────────────────────────────────
 
@@ -471,6 +472,10 @@ export default function IncidentsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [updateTarget, setUpdateTarget] = useState(null)
 
+  const { PullIndicator } = usePullToRefresh(async () => {
+    await fetchData()
+  })
+
   const fetchData = useCallback(async () => {
     try {
       const [incRes, monRes] = await Promise.all([
@@ -555,6 +560,7 @@ export default function IncidentsPage() {
       transition={{ duration: 0.3 }}
       className="pt-6 pb-6 px-4"
     >
+      <PullIndicator />
       <div className="max-w-container mx-auto">
         {/* Header */}
         <motion.div

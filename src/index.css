@@ -371,6 +371,11 @@ html {
   to { transform: rotate(360deg); }
 }
 
+/* ===== SHIMMER ANIMATION (skeleton loading) ===== */
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
 /* ===== STATUS PAGE LIGHT OVERRIDE ===== */
 .status-page-light {
   --bg: #f9fafb;

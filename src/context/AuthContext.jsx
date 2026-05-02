@@ -18,6 +18,42 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // Session expiry timer
+  useEffect(() => {
+    if (!token) return
+    // Check token expiry every 60 seconds
+    const interval = setInterval(() => {
+      const expiry = localStorage.getItem('tokenExpiry')
+      if (expiry && Date.now() > parseInt(expiry, 10)) {
+        // Token expired - try refresh or logout
+        handleTokenExpiry()
+      }
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [token])
+
+  const handleTokenExpiry = useCallback(async () => {
+    const refreshToken = localStorage.getItem('refreshToken')
+    if (refreshToken) {
+      try {
+        const res = await api.post('/auth/refresh', { refreshToken })
+        const { token: newToken, refreshToken: newRefresh, expiresIn } = res.data
+        localStorage.setItem('token', newToken)
+        if (newRefresh) localStorage.setItem('refreshToken', newRefresh)
+        if (expiresIn) localStorage.setItem('tokenExpiry', String(Date.now() + expiresIn * 1000))
+        setToken(newToken)
+        return
+      } catch {
+        // Refresh failed
+      }
+    }
+    // Logout
+    logout()
+    if (!window.location.pathname.includes('/login')) {
+      window.location.href = '/login'
+    }
+  }, [])
+
   // Load user on mount if token exists
   const getMe = useCallback(async () => {
     try {
@@ -53,9 +89,11 @@ export function AuthProvider({ children }) {
       setError(null)
       setLoading(true)
       const res = await api.post('/auth/login', { email, password })
-      const { data, token: jwt } = res.data
+      const { data, token: jwt, refreshToken: refresh, expiresIn } = res.data
       localStorage.setItem('token', jwt)
       localStorage.setItem('user', JSON.stringify(data))
+      if (refresh) localStorage.setItem('refreshToken', refresh)
+      if (expiresIn) localStorage.setItem('tokenExpiry', String(Date.now() + expiresIn * 1000))
       setToken(jwt)
       setUser(data)
       return data
@@ -193,6 +231,8 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(() => {
     localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('tokenExpiry')
     localStorage.removeItem('user')
     localStorage.removeItem('guestMode')
     setToken(null)

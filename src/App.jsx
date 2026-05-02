@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState, useEffect } from 'react'
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
+import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
@@ -8,6 +8,14 @@ import { I18nProvider } from './context/I18nContext'
 import { PlanProvider } from './context/PlanContext'
 import { ToastContainer } from './components/Toast'
 import LoadingScreen from './components/LoadingScreen'
+import ErrorBoundary from './components/ErrorBoundary'
+import { NetworkStatusBanner } from './components/NetworkStatus'
+import UpdateChecker from './components/UpdateChecker'
+import { setupGlobalErrorHandlers } from './utils/crashReporting'
+import { trackPageView } from './utils/analytics'
+import { initDeepLinks } from './utils/deepLinks'
+import { registerPushNotifications, handleNotificationNavigation } from './utils/notifications'
+import { DashboardPageSkeleton } from './components/SkeletonLoading'
 
 // Layouts
 import MarketingLayout from './layouts/MarketingLayout'
@@ -38,18 +46,25 @@ const LegalPage = lazy(() => import('./pages/LegalPage'))
 const CompanyPage = lazy(() => import('./pages/CompanyPage'))
 const PaymentPage = lazy(() => import('./pages/PaymentPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage'))
+
+// Setup crash reporting on load
+setupGlobalErrorHandlers()
 
 // Check if running in Capacitor/mobile
 function isMobilePlatform() {
   try {
-    // Check Capacitor native platform
     if (window.Capacitor && window.Capacitor.isNativePlatform()) return true
   } catch (e) {}
-  // Fallback: check screen width for mobile-like experience
   return window.innerWidth < 768
 }
 
-// Protected Route component - allows guest access to certain routes
+// Check if onboarding completed
+function needsOnboarding() {
+  return !localStorage.getItem('onboarding_completed')
+}
+
+// Protected Route component
 function ProtectedRoute({ children, guestAllowed = false }) {
   const { isAuthenticated, isGuest, loading } = useAuth()
 
@@ -61,19 +76,9 @@ function ProtectedRoute({ children, guestAllowed = false }) {
     )
   }
 
-  // Allow guest users to access guest-allowed routes
-  if (isGuest && guestAllowed) {
-    return children
-  }
-
-  // Allow guest users with the layout (MobileLayout handles restrictions)
-  if (isGuest) {
-    return children
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
+  if (isGuest && guestAllowed) return children
+  if (isGuest) return children
+  if (!isAuthenticated) return <Navigate to="/login" replace />
 
   return children
 }
@@ -82,7 +87,6 @@ function PageSkeleton() {
   return (
     <div className="min-h-screen pt-[128px] pb-[96px]" aria-busy="true" aria-label="Loading page content">
       <div className="max-w-container mx-auto px-[16px] sm:px-[24px] lg:px-[32px]">
-        {/* Hero skeleton */}
         <div className="text-center mb-12 animate-pulse">
           <div className="h-4 w-40 bg-card/60 rounded-full mx-auto mb-6" />
           <div className="h-12 w-3/4 bg-card/60 rounded-lg mx-auto mb-4" />
@@ -94,7 +98,6 @@ function PageSkeleton() {
             <div className="h-11 w-40 bg-card/40 rounded-xl" />
           </div>
         </div>
-        {/* Cards skeleton */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
           {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse rounded-lg border border-border bg-card/20 p-8">
@@ -102,25 +105,6 @@ function PageSkeleton() {
               <div className="h-5 w-3/4 bg-card/60 rounded mb-3" />
               <div className="h-4 w-full bg-card/40 rounded mb-2" />
               <div className="h-4 w-2/3 bg-card/40 rounded" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function DashboardSkeleton() {
-  return (
-    <div className="p-6" aria-busy="true">
-      <div className="animate-pulse">
-        <div className="h-8 w-64 bg-card/60 rounded mb-2" />
-        <div className="h-4 w-48 bg-card/40 rounded mb-8" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-lg border border-border bg-card/20 p-5">
-              <div className="h-4 w-24 bg-surface rounded mb-3" />
-              <div className="h-7 w-16 bg-surface rounded" />
             </div>
           ))}
         </div>
@@ -139,20 +123,61 @@ function ScrollToTop() {
   return null
 }
 
+// Track page views
+function PageTracker() {
+  const location = useLocation()
+
+  useEffect(() => {
+    trackPageView(location.pathname)
+  }, [location.pathname])
+
+  return null
+}
+
+// Deep link + push notification initializer
+function NativeInitializer() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Initialize deep links
+    initDeepLinks(navigate)
+
+    // Register push notifications
+    registerPushNotifications(
+      (token) => {
+        // Send token to backend for this user
+        console.log('[App] FCM token ready:', token?.slice(0, 20) + '...')
+      },
+      (data) => {
+        // Handle notification tap
+        handleNotificationNavigation(data, navigate)
+      }
+    )
+  }, [navigate])
+
+  return null
+}
+
 function AppContent() {
   const [appReady, setAppReady] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setAppReady(true), 800)
+    const timer = setTimeout(() => setAppReady(true), 1800)
     return () => clearTimeout(timer)
   }, [])
 
   if (!appReady) {
-    return <LoadingScreen />
+    return <LoadingScreen onComplete={() => setAppReady(true)} />
   }
 
   return (
-    <>
+    <ErrorBoundary>
+      {/* Update checker banner */}
+      <UpdateChecker />
+
+      {/* Network status banner */}
+      <NetworkStatusBanner />
+
       {/* Skip to content link */}
       <a
         href="#main-content"
@@ -162,12 +187,19 @@ function AppContent() {
       </a>
 
       <ScrollToTop />
+      <PageTracker />
+      <NativeInitializer />
 
       <Suspense fallback={<PageSkeleton />}>
         <AnimatePresence mode="wait">
           <Routes>
-            {/* Root redirects to login for mobile APK */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* Onboarding for first-time users */}
+            <Route path="/onboarding" element={<OnboardingPage />} />
+
+            {/* Root redirects */}
+            <Route path="/" element={
+              needsOnboarding() ? <Navigate to="/onboarding" replace /> : <Navigate to="/login" replace />
+            } />
 
             {/* Auth pages */}
             <Route element={<AuthLayout />}>
@@ -184,7 +216,7 @@ function AppContent() {
               }
             >
               <Route path="/dashboard" element={
-                <Suspense fallback={<DashboardSkeleton />}>
+                <Suspense fallback={<DashboardPageSkeleton />}>
                   <DashboardPage />
                 </Suspense>
               } />
@@ -205,7 +237,7 @@ function AppContent() {
       </Suspense>
 
       <ToastContainer />
-    </>
+    </ErrorBoundary>
   )
 }
 

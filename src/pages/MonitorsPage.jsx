@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Plus, Search, ArrowUpRight, Circle, Clock, Activity } from 'lucide-react'
 import api from '../utils/api'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 export default function MonitorsPage() {
   const [monitors, setMonitors] = useState([])
@@ -10,6 +11,10 @@ export default function MonitorsPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
   const navigate = useNavigate()
+
+  const { PullIndicator } = usePullToRefresh(async () => {
+    await fetchMonitors()
+  })
 
   useEffect(() => {
     fetchMonitors()
@@ -58,6 +63,7 @@ export default function MonitorsPage() {
 
   return (
     <div className="space-y-6">
+      <PullIndicator />
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Monitors</h1>
