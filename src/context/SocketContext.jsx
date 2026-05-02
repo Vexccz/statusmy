@@ -16,10 +16,15 @@ export function SocketProvider({ children }) {
 
   useEffect(() => {
     // Determine the socket URL based on environment
-    // In dev, Vite proxies /api but socket.io needs direct connection
-    const socketUrl = import.meta.env.DEV
-      ? 'http://localhost:5000'
-      : window.location.origin
+    let socketUrl = window.location.origin
+    if (import.meta.env.DEV) {
+      socketUrl = 'http://localhost:5000'
+    }
+    try {
+      if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        socketUrl = 'https://statusmy-api.up.railway.app'
+      }
+    } catch {}
 
     const newSocket = io(socketUrl, {
       auth: token ? { token } : {},

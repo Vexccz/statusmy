@@ -71,10 +71,24 @@ export { io };
 // Security headers
 app.use(helmet());
 
-// CORS
+// CORS - allow mobile app and frontend
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc)
+      if (!origin) return callback(null, true);
+      const allowed = [
+        process.env.FRONTEND_URL || 'http://localhost:5173',
+        'http://localhost:5173',
+        'http://localhost:5000',
+        'capacitor://localhost',
+        'http://localhost',
+      ];
+      if (allowed.includes(origin) || origin.includes('statusmy')) {
+        return callback(null, true);
+      }
+      callback(null, true); // Allow all for now
+    },
     credentials: true,
   })
 );

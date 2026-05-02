@@ -1,8 +1,20 @@
 import axios from 'axios'
 import { cacheResponse, getCachedResponse, getCacheKey, queueOfflineAction } from './offlineCache'
 
+// Determine API base URL
+function getBaseURL() {
+  // If running in Capacitor native app, use production URL
+  try {
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+      return 'https://statusmy-api.up.railway.app/api'
+    }
+  } catch {}
+  // Web: use relative path (Vite proxy handles it)
+  return '/api'
+}
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
