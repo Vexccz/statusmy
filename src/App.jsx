@@ -196,10 +196,49 @@ function AppContent() {
             {/* Onboarding for first-time users */}
             <Route path="/onboarding" element={<OnboardingPage />} />
 
-            {/* Root redirects */}
-            <Route path="/" element={
-              needsOnboarding() ? <Navigate to="/onboarding" replace /> : <Navigate to="/login" replace />
-            } />
+            {/* Marketing pages */}
+            <Route element={<MarketingLayout />}>
+              <Route path="/" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <HomePage />
+                </Suspense>
+              } />
+              <Route path="/pricing" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <PricingPage />
+                </Suspense>
+              } />
+              <Route path="/about" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <AboutPage />
+                </Suspense>
+              } />
+              <Route path="/docs" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <DocsPage />
+                </Suspense>
+              } />
+              <Route path="/changelog" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <ChangelogPage />
+                </Suspense>
+              } />
+              <Route path="/features" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <FeaturePage />
+                </Suspense>
+              } />
+              <Route path="/company" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <CompanyPage />
+                </Suspense>
+              } />
+              <Route path="/legal" element={
+                <Suspense fallback={<DashboardPageSkeleton />}>
+                  <LegalPage />
+                </Suspense>
+              } />
+            </Route>
 
             {/* Auth pages */}
             <Route element={<AuthLayout />}>
