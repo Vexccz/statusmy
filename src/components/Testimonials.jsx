@@ -144,10 +144,10 @@ export default function Testimonials() {
           className="text-center mb-[48px]"
         >
           <h2 className="font-display text-heading-lg md:text-[3rem] md:leading-[1.1] md:tracking-[-0.02em] font-bold text-text-primary mb-[16px]">
-            Loved by Malaysian teams
+            What teams say
           </h2>
           <p className="text-lg text-text-secondary">
-            See why hundreds of companies across Malaysia trust StatusMy to keep their services running.
+            See why engineering teams trust StatusMy to keep their services running.
           </p>
         </motion.div>
 
