@@ -1,22 +1,24 @@
 import { motion, useReducedMotion } from 'framer-motion'
 
+// Official brand icons via Simple Icons CDN (monochrome SVG, tinted via currentColor)
+// Icon slugs: https://simpleicons.org/
 const integrations = [
-  { name: 'AWS', color: '#FF9900' },
-  { name: 'GitHub', color: '#f5f5f5' },
-  { name: 'Slack', color: '#4A154B' },
-  { name: 'Jira', color: '#0052CC' },
-  { name: 'VS Code', color: '#007ACC' },
-  { name: 'Vercel', color: '#f5f5f5' },
-  { name: 'GitLab', color: '#FC6D26' },
-  { name: 'Bitbucket', color: '#0052CC' },
-  { name: 'PagerDuty', color: '#06AC38' },
-  { name: 'Datadog', color: '#632CA6' },
-  { name: 'Netlify', color: '#00C7B7' },
-  { name: 'Heroku', color: '#430098' },
-  { name: 'Azure', color: '#0078D4' },
-  { name: 'Terraform', color: '#7B42BC' },
-  { name: 'Docker', color: '#2496ED' },
-  { name: 'Webpack', color: '#8DD6F9' },
+  { name: 'AWS', slug: 'amazonaws', color: '#FF9900' },
+  { name: 'GitHub', slug: 'github', color: '#f5f5f5' },
+  { name: 'Slack', slug: 'slack', color: '#4A154B' },
+  { name: 'Jira', slug: 'jira', color: '#0052CC' },
+  { name: 'VS Code', slug: 'visualstudiocode', color: '#007ACC' },
+  { name: 'Vercel', slug: 'vercel', color: '#f5f5f5' },
+  { name: 'GitLab', slug: 'gitlab', color: '#FC6D26' },
+  { name: 'Bitbucket', slug: 'bitbucket', color: '#0052CC' },
+  { name: 'PagerDuty', slug: 'pagerduty', color: '#06AC38' },
+  { name: 'Datadog', slug: 'datadog', color: '#632CA6' },
+  { name: 'Netlify', slug: 'netlify', color: '#00C7B7' },
+  { name: 'Heroku', slug: 'heroku', color: '#430098' },
+  { name: 'Azure', slug: 'microsoftazure', color: '#0078D4' },
+  { name: 'Terraform', slug: 'terraform', color: '#7B42BC' },
+  { name: 'Docker', slug: 'docker', color: '#2496ED' },
+  { name: 'Webpack', slug: 'webpack', color: '#8DD6F9' },
 ]
 
 const containerVariants = {
@@ -66,15 +68,18 @@ export default function Integrations() {
             <motion.div
               key={item.name}
               variants={prefersReducedMotion ? {} : cardVariants}
-              className="group flex flex-col items-center justify-center p-5 rounded-lg bg-card/50 border border-border hover:border-brand/30 hover:bg-card transition-all duration-200 cursor-pointer min-h-[80px]"
+              className="group flex flex-col items-center justify-center p-5 rounded-lg bg-card/50 border border-border hover:border-brand/30 hover:bg-card transition-all duration-200 cursor-pointer min-h-[88px]"
+              title={item.name}
             >
-              <span
-                className="text-lg font-bold mb-2 transition-transform duration-200 group-hover:scale-110"
-                style={{ color: item.color }}
-                aria-hidden="true"
-              >
-                {item.name.slice(0, 2).toUpperCase()}
-              </span>
+              <img
+                src={`https://cdn.simpleicons.org/${item.slug}/${encodeURIComponent(item.color.replace('#', ''))}`}
+                alt={`${item.name} logo`}
+                width="28"
+                height="28"
+                loading="lazy"
+                decoding="async"
+                className="mb-2 transition-transform duration-200 group-hover:scale-110"
+              />
               <span className="text-caption text-text-muted group-hover:text-text-secondary transition-colors">
                 {item.name}
               </span>
