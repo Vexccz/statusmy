@@ -1,6 +1,27 @@
 import axios from 'axios'
 import { cacheResponse, getCachedResponse, getCacheKey, queueOfflineAction } from './offlineCache'
 
+// Public paths that should never force-redirect to /login
+const PUBLIC_PATH_PREFIXES = [
+  '/login',
+  '/signup',
+  '/onboarding',
+  '/pricing',
+  '/about',
+  '/docs',
+  '/changelog',
+  '/features',
+  '/company',
+  '/legal',
+  '/status',
+]
+
+function isPublicPath() {
+  const path = window.location.pathname
+  if (path === '/' || path === '') return true
+  return PUBLIC_PATH_PREFIXES.some((p) => path.startsWith(p))
+}
+
 // Determine API base URL
 function getBaseURL() {
   // If running in Capacitor native app, use production URL
@@ -112,10 +133,7 @@ api.interceptors.response.use(
           localStorage.removeItem('token')
           localStorage.removeItem('refreshToken')
           localStorage.removeItem('user')
-          if (
-            !window.location.pathname.includes('/login') &&
-            !window.location.pathname.includes('/signup')
-          ) {
+          if (!isPublicPath()) {
             window.location.href = '/login'
           }
           return Promise.reject(error)
@@ -125,10 +143,7 @@ api.interceptors.response.use(
       // No refresh token - logout
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      if (
-        !window.location.pathname.includes('/login') &&
-        !window.location.pathname.includes('/signup')
-      ) {
+      if (!isPublicPath()) {
         window.location.href = '/login'
       }
     }

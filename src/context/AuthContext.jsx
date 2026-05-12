@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
     }
     // Logout
     logout()
-    if (!window.location.pathname.includes('/login')) {
+    if (!['/','/login','/signup','/onboarding'].includes(window.location.pathname) && !window.location.pathname.startsWith('/pricing') && !window.location.pathname.startsWith('/about') && !window.location.pathname.startsWith('/docs') && !window.location.pathname.startsWith('/changelog') && !window.location.pathname.startsWith('/features') && !window.location.pathname.startsWith('/company') && !window.location.pathname.startsWith('/legal') && !window.location.pathname.startsWith('/status')) {
       window.location.href = '/login'
     }
   }, [])
@@ -70,7 +70,7 @@ export function AuthProvider({ children }) {
       setUser(res.data.data)
       setError(null)
     } catch (err) {
-      // Token invalid or expired
+      // Token invalid or expired - silently clear, do not redirect
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       setToken(null)
