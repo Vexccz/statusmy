@@ -133,13 +133,16 @@ export default function DashboardLayout() {
             <circle cx="16" cy="16" r="5" fill="url(#sidebar-logo-grad)" />
             <defs>
               <linearGradient id="sidebar-logo-grad" x1="4" y1="4" x2="28" y2="28">
-                <stop stopColor="#10B981" />
-                <stop offset="1" stopColor="#34D399" />
+                <stop stopColor="#22D3EE" />
+                <stop offset="1" stopColor="#6366F1" />
               </linearGradient>
             </defs>
           </svg>
           {!collapsed && (
-            <span className="text-lg font-bold text-text-primary whitespace-nowrap">StatusMy</span>
+            <div className="flex flex-col leading-none min-w-0">
+              <span className="obs-kicker">obs · v1</span>
+              <span className="text-base font-bold text-text-primary whitespace-nowrap font-mono tracking-tight">status<span className="text-brand">.my</span></span>
+            </div>
           )}
         </Link>
       </div>
@@ -158,14 +161,14 @@ export default function DashboardLayout() {
                   {...linkProps}
                   className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                     active
-                      ? 'bg-[rgba(16,185,129,0.1)] text-[#10B981]'
+                      ? 'bg-brand-bg text-brand'
                       : 'text-text-secondary hover:text-text-primary hover:bg-surface/60'
                   }`}
                   title={collapsed ? link.label : undefined}
                 >
                   {/* Active left border */}
                   {active && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-[#10B981]" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-brand" />
                   )}
                   <Icon size={20} className="flex-shrink-0" />
                   {!collapsed && <span>{link.label}</span>}
@@ -204,11 +207,11 @@ export default function DashboardLayout() {
             }`}
             title={collapsed ? user?.name : undefined}
           >
-            <div className="w-8 h-8 rounded-full bg-[rgba(16,185,129,0.2)] flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-brand-bg flex items-center justify-center flex-shrink-0">
               {user?.avatar ? (
                 <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
               ) : (
-                <User size={16} className="text-[#34D399]" />
+                <User size={16} className="text-brand-light" />
               )}
             </div>
             {!collapsed && (
@@ -309,12 +312,12 @@ export default function DashboardLayout() {
                           <circle cx="16" cy="16" r="5" fill="url(#mobile-logo-grad)" />
                           <defs>
                             <linearGradient id="mobile-logo-grad" x1="4" y1="4" x2="28" y2="28">
-                              <stop stopColor="#10B981" />
-                              <stop offset="1" stopColor="#34D399" />
+                              <stop stopColor="#22D3EE" />
+                              <stop offset="1" stopColor="#6366F1" />
                             </linearGradient>
                           </defs>
                         </svg>
-                        <span className="text-lg font-bold text-text-primary">StatusMy</span>
+                        <span className="text-lg font-bold text-text-primary font-mono">status<span className="text-brand">.my</span></span>
                       </Link>
                     </div>
 
@@ -332,12 +335,12 @@ export default function DashboardLayout() {
                                 {...linkProps}
                                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                   active
-                                    ? 'bg-[rgba(16,185,129,0.1)] text-[#10B981]'
+                                    ? 'bg-brand-bg text-brand'
                                     : 'text-text-secondary hover:text-text-primary hover:bg-surface/60'
                                 }`}
                               >
                                 {active && (
-                                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-[#10B981]" />
+                                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-brand" />
                                 )}
                                 <Icon size={20} className="flex-shrink-0" />
                                 <span>{link.label}</span>
@@ -351,11 +354,11 @@ export default function DashboardLayout() {
                     {/* User section mobile */}
                     <div className="px-2 py-3 border-t border-border flex-shrink-0">
                       <div className="flex items-center gap-3 px-3 py-2">
-                        <div className="w-8 h-8 rounded-full bg-[rgba(16,185,129,0.2)] flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-brand-bg flex items-center justify-center flex-shrink-0">
                           {user?.avatar ? (
                             <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
                           ) : (
-                            <User size={16} className="text-[#34D399]" />
+                            <User size={16} className="text-brand-light" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">

@@ -30,10 +30,10 @@ function DashboardMockup() {
       <div className="relative rounded-xl border border-border bg-surface overflow-hidden shadow-2xl">
         {/* Title bar */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-card/50">
-          <div className="w-3 h-3 rounded-full bg-[#F54E4E]/70" />
-          <div className="w-3 h-3 rounded-full bg-[#F7A501]/70" />
-          <div className="w-3 h-3 rounded-full bg-[#30CF79]/70" />
-          <span className="ml-3 text-caption text-text-muted font-mono">statusmy.com/dashboard</span>
+          <div className="w-3 h-3 rounded-full bg-semantic-error/70" />
+          <div className="w-3 h-3 rounded-full bg-semantic-warning/70" />
+          <div className="w-3 h-3 rounded-full bg-semantic-success/70" />
+          <span className="ml-3 obs-kicker">~/observability/dashboard — tmux</span>
         </div>
 
         {/* Dashboard content */}
@@ -119,27 +119,27 @@ export default function Hero() {
         >
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-8 rounded-full border border-border bg-card/50 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-semantic-success animate-pulse" aria-hidden="true" />
-            <span className="text-caption text-text-secondary">Now with multi-region monitoring</span>
+            <span className="obs-led" aria-hidden="true" />
+            <span className="obs-kicker">[probe] multi-region · all systems nominal</span>
           </div>
 
           {/* Main heading */}
           <h1 className="heading-xl text-text-primary mb-6">
-            <span>Know when it's down.</span>
+            <span>Your uptime,</span>
             <br />
-            <span className="text-gradient">Before your users do.</span>
+            <span className="text-gradient">observed like an SRE would.</span>
           </h1>
 
           {/* Subtitle */}
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-text-secondary leading-relaxed mb-10">
-            StatusMy monitors your websites, APIs, and services 24/7. Get instant alerts when something goes wrong and beautiful status pages your customers will love.
+            Synthetic probes, latency percentiles, anomaly detection, and alert pipelines. Ship to on-call, Slack, webhook, or a public status page in minutes.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Link to="/signup" className="btn-primary min-h-[44px] flex items-center">
-                Start Monitoring Free
+              <Link to="/signup" className="btn-primary min-h-[44px] flex items-center font-mono tracking-tight">
+                $ start monitoring
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -156,9 +156,9 @@ export default function Hero() {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="mt-12 grid grid-cols-3 gap-8 max-w-lg mx-auto"
           >
-            <AnimatedStat end={10} suffix="K+" label="Monitors" />
-            <AnimatedStat end={99.9} suffix="%" label="Uptime SLA" />
-            <AnimatedStat end={50} suffix="+" label="Countries" />
+            <AnimatedStat end={10} suffix="K+" label="probes/day" />
+            <AnimatedStat end={99.9} suffix="%" label="uptime SLA" />
+            <AnimatedStat end={50} suffix="+" label="regions" />
           </motion.div>
 
           {/* Animated Vector Illustration */}
@@ -181,7 +181,7 @@ export default function Hero() {
             transition={{ delay: 0.8, duration: 0.5 }}
             className="mt-16 md:mt-20"
           >
-            <p className="text-caption uppercase tracking-widest text-text-muted mb-6">Trusted by Malaysian companies</p>
+            <p className="obs-kicker mb-6">// instrumented by teams at</p>
             <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-12 opacity-40">
               {['Grab', 'Petronas', 'AirAsia', 'Maybank', 'CIMB', 'Axiata'].map((name) => (
                 <span key={name} className="text-base sm:text-lg font-bold text-text-primary/60 hover:text-text-primary/80 transition-colors">{name}</span>

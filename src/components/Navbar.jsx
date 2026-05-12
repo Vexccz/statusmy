@@ -67,12 +67,12 @@ export default function Navbar() {
               <circle cx="16" cy="16" r="5" fill="url(#logo-grad)" />
               <defs>
                 <linearGradient id="logo-grad" x1="4" y1="4" x2="28" y2="28">
-                  <stop stopColor="#10B981" />
-                  <stop offset="1" stopColor="#34D399" />
+                  <stop stopColor="#22D3EE" />
+                  <stop offset="1" stopColor="#6366F1" />
                 </linearGradient>
               </defs>
             </svg>
-            <span className="text-xl font-bold text-text-primary">StatusMy</span>
+            <span className="text-xl font-bold text-text-primary font-mono tracking-tight">status<span className="text-brand">.my</span></span>
           </Link>
 
           {/* Desktop Nav */}
