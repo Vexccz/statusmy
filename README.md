@@ -78,17 +78,25 @@ Built as a full SaaS stack including web dashboard, backend API, public status p
 
 ```
 statusmy/
-├── src/                Frontend React SPA
-│   ├── pages/          Dashboard, Monitors, Incidents, Status Pages, Billing
-│   ├── layouts/        MobileLayout, DesktopLayout
-│   └── components/     Charts, Maps, Status widgets
-├── backend/            Express API
-│   ├── routes/         Monitors, Alerts, Incidents, Subscribers
-│   ├── services/       Scheduler, Notification router, SLA calculator
-│   └── db/             SQLite migrations
-├── android/            Capacitor Android project
-├── public/             Marketing pages and status page templates
-└── playwright/         End-to-end tests
+├── src/                    Frontend React SPA
+│   ├── pages/              Dashboard, Monitors, Incidents, Status Pages, Billing
+│   ├── components/         Charts, Maps, Status widgets
+│   ├── context/            Auth, Theme, Socket providers
+│   ├── hooks/              Custom React hooks
+│   ├── layouts/            MobileLayout, DesktopLayout
+│   ├── docs/               In-app documentation
+│   └── utils/              Helper functions
+├── backend/                Express API
+│   ├── routes/             Monitors, Alerts, Incidents, Subscribers
+│   ├── controllers/        Request handlers
+│   ├── services/           Scheduler, Notification router, SLA calculator
+│   ├── models/             Data models
+│   ├── middleware/         Auth, validation
+│   ├── config/             App configuration
+│   ├── data/               Seed data and fixtures
+│   └── utils/              Backend helpers
+├── public/                 Marketing pages and status page templates
+└── .vercel/                Vercel deployment config
 ```
 
 ## Getting Started
