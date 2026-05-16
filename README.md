@@ -4,7 +4,7 @@
 
 **Uptime Monitoring and Status Page Platform**
 
-Full-stack uptime monitoring SaaS with real-time dashboards, multi-channel alerting, public status pages, SLA reporting, and native mobile apps.
+Full-stack uptime monitoring with real-time dashboards, multi-channel alerting, public status pages, SLA reporting, and native mobile apps.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
